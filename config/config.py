@@ -17,6 +17,12 @@ metrics1 = ["braycurtis", "canberra", "chebyshev", "cityblock", "correlation", "
 
 metrics2 = ["braycurtis", "cityblock", "euclidean", "minkowski", "sqeuclidean"]
 
+
+metrics3 = ["braycurtis", "canberra", "chebyshev", "cityblock", "euclidean",
+            "minkowski",
+            "seuclidean",
+            "KLdivergence"]
+
 # The parameters of DE
 de_para = {
     "beta": 0.2,

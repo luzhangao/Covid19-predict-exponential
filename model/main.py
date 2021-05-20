@@ -37,14 +37,16 @@ def run(metrics):
     """
     x, y = read_data()
     colors = cm.get_cmap("coolwarm", len(metrics))
-    plt.plot(x, y, color="lime", marker="o", linestyle="-", label="original curve")
+    # plt.plot(x, y, color="lime", marker="o", linestyle="-", label="original curve")
+    plt.bar(x, y, fc='lime', label="original curve")
     i = 0
     for metric in metrics:
         fc = FitCurve(x, y, metric)
         res = fc.fit_by_de(**config.de_para)
-        new_y = list(map(lambda elm: fc.exponential_function(elm, res[0], res[1]), x))
-        plt.plot(x, new_y, color=colors(i), marker="o", linestyle="-", label=metric)
-        print(fc.metric, res, np.mean(np.array(new_y) - y))
+        new_x = np.append(x, np.array(range(59, 73)))
+        new_y = list(map(lambda elm: fc.exponential_function(elm, res[0], res[1]), new_x))
+        plt.plot(new_x, new_y, color=colors(i), marker="o", linestyle="-", label=metric)
+        print(fc.metric, res, np.mean(np.array(list(map(lambda elm: fc.exponential_function(elm, res[0], res[1]), x))) - y))
         i += 1
     plt.title("The original and fit curves")
     plt.xlabel('report')
@@ -54,4 +56,4 @@ def run(metrics):
 
 
 if __name__ == '__main__':
-    run(config.metrics2)
+    run(config.metrics3)
