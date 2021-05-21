@@ -19,9 +19,7 @@ metrics2 = ["braycurtis", "cityblock", "euclidean", "minkowski", "sqeuclidean"]
 
 
 metrics3 = ["braycurtis", "canberra", "chebyshev", "cityblock", "euclidean",
-            "minkowski",
-            "seuclidean",
-            "KLdivergence"]
+            "minkowski", "sqeuclidean", "KLdivergence"]
 
 # The parameters of DE
 de_para = {
@@ -32,8 +30,10 @@ de_para = {
     "disp": False,
 }
 
+threshold = 1000000
 
 data_path = "../data/data.txt"
+who_data_path = "../data/WHOdata.xlsx"
 
 
 if __name__ == '__main__':
