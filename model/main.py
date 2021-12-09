@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import matplotlib.colors as colors
 from sklearn.model_selection import GridSearchCV
 from model.fit_curve import FitCurve
 from config import config
@@ -140,11 +141,13 @@ def draw(metrics, de_para="read"):
     plt.show()
 
 
-def draw_with_coefficients(metrics):
+def draw_with_coefficients(metrics, color_map="coolwarm", color_for_orginal="lime"):
     """
     Differential evolution is a method with high randomness. So it is not easy to recurrent previous result. So this
     function will draw the graphs based on the coefficients saved by function draw().
     :param metrics:
+    :param color_map: string or LinearSegmentedColormap, "coolwarm" or "grey"
+    :param color_for_orginal: string "lime" or "black"
     :return:
     """
     coefficients = pd.read_excel(config.coefficients_path)
@@ -154,11 +157,15 @@ def draw_with_coefficients(metrics):
     y_need_fit = y[: 16]
     # x_need_fit = x
     # y_need_fit = y
-    colors = cm.get_cmap("coolwarm", len(metrics))
-    plt.bar(x_need_fit, y_need_fit, width=0.1, fc='black', label="original curve (bar)")
-    plt.plot(x, y, color="lime", linestyle="-", label="original curve (1M)")
-    i = 0
+    if isinstance(color_map, str):
+        colors_list = cm.get_cmap(color_map, len(metrics))
+    else:
+        colors_list = color_map
+    print(colors_list(range(6)))
+    plt.bar(x_need_fit, y_need_fit, width=0.1, fc='black', label="Original data (bar)")
+    plt.plot(x, y, color=color_for_orginal, linestyle="dashed", label="Original data (curve)")
     save_coefficients = {}
+    i = 0
     day76 = {}
     for metric in metrics:
         # print(coefficients[metric])
@@ -166,17 +173,17 @@ def draw_with_coefficients(metrics):
         b = coefficients[metric][1]
         c = coefficients[metric][2]
         new_y = list(map(lambda elm: FitCurve.exponential_function(elm, a, b, c), x))
-        plt.plot(x, new_y, color=colors(i), linestyle="-", label=metric)
+        plt.plot(x, new_y, color=colors_list(i), linestyle="-", label=config.label4[metric])
         # print(fc.metric, res, np.mean(np.array(
         #     list(map(lambda elm: fc.exponential_function(elm, res[0], res[1], res[2]), x_need_fit))) - y_need_fit),
         #       fc.score())
         day76[metric] = new_y[33]
         i += 1
     print(sorted(day76.items(), key=lambda kv: (kv[1], kv[0])))
-    plt.axhline(y=config.threshold, color='grey', linestyle='--')
-    plt.title("The original and fit curves")
-    plt.xlabel('report')
-    plt.ylabel('all')
+    plt.axhline(y=config.threshold, color='grey', linestyle='dotted')
+    # plt.title("The original and fit curves")
+    plt.xlabel('Day')
+    plt.ylabel('Cases')
     plt.legend()
     plt.show()
 
@@ -186,5 +193,22 @@ if __name__ == '__main__':
     # analysis()
     # draw(config.metrics3)
     # draw(config.metrics3, config.de_para[1])
-    draw_with_coefficients(config.metrics3)
+    # draw_with_coefficients(config.metrics4)
+
+    """
+    Original colormaps (gray or Greys) contains white color. So customize a colormap to avoid display white color.
+    [[0.1  0.1  0.1  1.  ]
+     [0.25 0.25 0.25 1.  ]
+     [0.4  0.4  0.4  1.  ]
+     [0.55 0.55 0.55 1.  ]
+     [0.7  0.7  0.7  1.  ]
+     [0.85 0.85 0.85 1.  ]]
+    """
+    temp = np.full((3, 6), np.arange(0.1, 1, 0.15)).T
+    ones = np.ones(6)
+    color_array = np.column_stack((temp, ones))
+    color_map = colors.LinearSegmentedColormap.from_list("customize gray", color_array, N=6)
+
+    # draw_with_coefficients(config.metrics4, color_map="gray", color_for_orginal="black")
+    draw_with_coefficients(config.metrics4, color_map=color_map, color_for_orginal="black")
 
