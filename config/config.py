@@ -20,6 +20,17 @@ metrics2 = ["braycurtis", "cityblock", "euclidean", "minkowski", "sqeuclidean"]
 metrics3 = ["braycurtis", "canberra", "chebyshev", "cityblock", "euclidean",
             "minkowski", "sqeuclidean", "KLdivergence"]
 
+metrics4 = ["braycurtis", "canberra", "chebyshev", "cityblock", "euclidean", "KLdivergence"]
+
+label4 = {
+    "braycurtis": "Bray-Curtis",
+    "canberra": "Canberra",
+    "chebyshev": "Chebyshev",
+    "cityblock": "Manhattan",
+    "euclidean": "Euclidean",
+    "KLdivergence": "Kullback-Leibler Divergence",
+}
+
 
 # The parameters of DE
 de_para = {
